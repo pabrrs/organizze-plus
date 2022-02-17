@@ -1,0 +1,40 @@
+{
+    "name": "Organizze Plus",
+    "description": "Ferramentas personalizadas para aumentar a produtividade no Organizze!",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "webRequest"
+    ],
+    "action": {
+        "default_icon": {
+            "16": "img/icon1200x1200.png",
+            "24": "img/icon1200x1200.png",
+            "32": "img/icon1200x1200.png",
+            "48": "img/icon1200x1200.png",
+            "128": "img/icon1200x1200.png"
+        }
+    },
+    "icons": {
+        "16": "img/icon1200x1200.png",
+        "24": "img/icon1200x1200.png",
+        "32": "img/icon1200x1200.png",
+        "48": "img/icon1200x1200.png",
+        "128": "img/icon1200x1200.png"
+    },
+    "host_permissions": [
+        "https://app.organizze.com.br/"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://app.organizze.com.br/*/inicio"
+            ],
+            "js": [
+                "organizze-plus.js"
+            ]
+        }
+    ]
+}
