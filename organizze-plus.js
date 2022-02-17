@@ -6,8 +6,12 @@ function checkDocument() {
     var accountsDiv = document.getElementsByClassName('zze-list-accounts')[0]
     if (accountsDiv) {
         console.log('organizze-plus :: doc is ready!')
+        
         orderAccountsByBalanceDesc();
-        document.addEventListener('DOMContentLoaded', orderAccountsByBalanceDesc);
+    
+        var toggleInput = document.getElementsByClassName('zze-config ng-binding ng-scope')[0].firstChild;
+        toggleInput.addEventListener('click', toggleInvestmentAccounts);
+    
     } else {
         console.log('organizze-plus :: doc is not ready, waiting ...')
         setTimeout(checkDocument, 500);
@@ -37,4 +41,25 @@ function orderAccountsByBalanceDesc() {
             return -1;
     })
     accountsUl.outerHTML = '<ul>' + accountsOrdered.reduce(function (init, el) { return init + el.outerHTML }, '') + '</ul>'
+};
+
+function toggleInvestmentAccounts() {
+    var accountsListItems = document.querySelectorAll('.zze-list-accounts > ul > li');
+    
+    var toggleInput = document.getElementsByClassName('zze-config ng-binding ng-scope')[0].firstChild;
+    var shouldHide = !toggleInput.classList.contains('checked');
+
+    if (shouldHide)
+        accountsListItems.forEach(function (el) {
+            var accountType = el.querySelector('a > span > p');
+            if (accountType.textContent === 'Conta poupança / investimento') {
+                el.style.visibility = 'hidden';
+                el.style.display ='none';
+            };
+        });
+    else 
+        accountsListItems.forEach(function (el) {
+            el.style.visibility = 'visible';
+            el.style.display ='block';
+        });
 };
