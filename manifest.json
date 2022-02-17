@@ -32,6 +32,8 @@
             "matches": [
                 "https://app.organizze.com.br/*/inicio"
             ],
+            "run_at": "document_end",
+            "all_frames": true,
             "js": [
                 "organizze-plus.js"
             ]
