@@ -97,7 +97,7 @@ function orderAccountsByAccountType() {
 
         var totalLi = document.createElement('li')
         totalLi.classList.add('zze-list-columns', 'ng-scope')
-        totalLi.innerHTML = "<div class='row'><div class='col-md-8'><h1 class='lb-title ng-binding' style='color:#555'>Total R$</h3></div><div class='col-md-4'><h1 class='ng-binding ng-scope' style='color:#066e38' >"+totalBankBalance+"</h1></div></div>"
+        totalLi.innerHTML = "<div class='row op-total'><div class='col-md-8'><h1 class='lb-title ng-binding' style='color:#555'>Total R$</h3></div><div class='col-md-4'><h1 class='ng-binding ng-scope' style='color:#066e38' >"+totalBankBalance+"</h1></div></div>"
         accountsOrdered = [...accountsOrdered, ...bankBalances, totalLi]
     }
 
@@ -107,7 +107,7 @@ function orderAccountsByAccountType() {
 
 function toggleInvestmentAccounts() {
     var accountsListItems = document.querySelectorAll('.zze-list-accounts > ul > li');
-    
+    var totalsDiv = document.querySelectorAll('.op-total');
     var toggleInput = document.getElementsByClassName('zze-config ng-binding ng-scope')[0].firstChild;
     var shouldHide = !toggleInput.classList.contains('checked');
 
@@ -117,11 +117,19 @@ function toggleInvestmentAccounts() {
             if (accountType.textContent === 'Conta poupança / investimento') {
                 el.style.visibility = 'hidden';
                 el.style.display ='none';
+                totalsDiv.forEach(function ({parentNode}) {
+                    parentNode.style.visibility = 'hidden';
+                    parentNode.style.display ='none';
+                })
             };
         });
     else 
         accountsListItems.forEach(function (el) {
             el.style.visibility = 'visible';
             el.style.display ='block';
+            totalsDiv.forEach(function ({ parentNode }) {
+                parentNode.style.visibility = 'visible';
+                parentNode.style.display = 'block';
+            })
         });
 };
