@@ -1,5 +1,7 @@
 "use strict";
 
+var formatToBr = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+
 checkDocument();
 
 function checkDocument() {
@@ -18,28 +20,37 @@ function checkDocument() {
     }
 }
 
-function orderAccountsByBalanceDesc() {
-    var accountsDiv = document.getElementsByClassName('zze-list-accounts')[0];
-    var accountsUl = accountsDiv.firstChild;
-    var accountsList = accountsUl.childNodes;
-    var accounts = [];
-    accountsList.forEach(function (el) {
-        if (el.nodeType !== Node.COMMENT_NODE) {
-            accounts.push(el)
-        }
-    });
-    var accountsOrdered = accounts.sort(function (a, b) {
-        var aAccountH1 = a.getElementsByTagName('h1')[0]
-        var BAccountH1 = b.getElementsByTagName('h1')[0]
-
-        var aBalance = Number(aAccountH1.innerHTML.replace("R$ ", "").replace(".","").replace(",", "."))
-        var bBalance = Number(BAccountH1.innerHTML.replace("R$ ", "").replace(".","").replace(",", "."))
+function sortAccountsByBalance(accounts) {
+    return accounts.sort(function (a, b) {
+        var aBalance = getAccountBalance(a);
+        var bBalance = getAccountBalance(b);
         
         if (aBalance < bBalance)
             return 1
         else 
             return -1;
-    })
+    });
+}
+
+
+function getAccountBalance(account) {
+    var accountH1 = account.getElementsByTagName('h1')[0]
+    return Number(accountH1.innerHTML.replace("R$ ", "").replace(".","").replace(",", "."))
+}
+
+function orderAccountsByBalanceDesc() {
+    var accountsDiv = document.getElementsByClassName('zze-list-accounts')[0];
+    var accountsUl = accountsDiv.firstChild;
+    var accountsList = accountsUl.childNodes;
+    var accounts = [];
+
+    accountsList.forEach(function (el) {
+        if (el.nodeType !== Node.COMMENT_NODE) {
+            accounts.push(el)
+        }
+    });
+
+    var accountsOrdered = sortAccountsByBalance(accounts);
     accountsUl.outerHTML = '<ul>' + accountsOrdered.reduce(function (init, el) { return init + el.outerHTML }, '') + '</ul>'
 };
 
@@ -47,39 +58,51 @@ function orderAccountsByAccountType() {
     var accountsUl = document.querySelector('.zze-list-accounts > ul');
     var accountsList = accountsUl.childNodes;
     var accounts = [];
+    var accountsByBank = {};
     
     accountsList.forEach(function (el) {
         if (el.nodeType !== Node.COMMENT_NODE) {
             accounts.push(el)
         };
     });
+
+    accounts = sortAccountsByBalance(accounts)
     
-    var accountsOrdered = accounts.sort(function (a, b) {
-        var aAccountImg = a.querySelector('a > div > img');
-        var aAccountIcon = a.querySelector('a > div > i');
+    accounts.forEach(function (item) {
+        var accountImg = item.querySelector('a > div > img');
+        var accountIcon = item.querySelector('a > div > i');
         
-        if (aAccountIcon) {
-            aAccountIcon = aAccountIcon.parentNode;
-        }
-        
-        var bAccountImg = b.querySelector('a > div > img');
-        var bAccountIcon = b.querySelector('a > div > i');
+        if (accountIcon)
+            accountIcon = accountIcon.parentNode;
 
-        if (bAccountIcon) {
-            bAccountIcon = bAccountIcon.parentNode;
-        }
+        var logoName = accountImg ? accountImg.src.split('/').pop() : accountIcon.style;
 
-        var aLogo = aAccountImg ? aAccountImg.src.split('/').pop() : aAccountIcon.style;
-        var bLogo = bAccountImg ? bAccountImg.src.split('/').pop() : bAccountIcon.style;
-
-        if (aLogo > bLogo)
-            return 1;
-        else 
-            return -1;
+        if (accountsByBank[logoName])
+            accountsByBank[logoName] = [item, ...accountsByBank[logoName]]
+        else
+            accountsByBank[logoName] = [item]
     });
 
+    var accountsOrdered = [];
+    var bankSortered = Object.keys(accountsByBank);
+    
+    for (var bank in bankSortered) {
+        var bankBalances = sortAccountsByBalance(accountsByBank[bankSortered[bank]])
+
+        var totalBankBalance = bankBalances.reduce(function (sum, account) { 
+            return sum + getAccountBalance(account) 
+        }, 0)
+
+        totalBankBalance = formatToBr.format(totalBankBalance)
+
+        var totalLi = document.createElement('li')
+        totalLi.classList.add('zze-list-columns', 'ng-scope')
+        totalLi.innerHTML = "<div class='row'><div class='col-md-8'><h1 class='lb-title ng-binding' style='color:#555'>Total R$</h3></div><div class='col-md-4'><h1 class='ng-binding ng-scope' style='color:#066e38' >"+totalBankBalance+"</h1></div></div>"
+        accountsOrdered = [...accountsOrdered, ...bankBalances, totalLi]
+    }
+
     accountsUl.outerHTML = '<ul>' + accountsOrdered.reduce(function (init, el) { return init + el.outerHTML }, '') + '</ul>'
-};
+}
 
 
 function toggleInvestmentAccounts() {
