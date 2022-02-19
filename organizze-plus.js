@@ -1,15 +1,17 @@
 "use strict";
 
-var formatToBr = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })
+var formatToBr = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
 
 checkDocument();
 
 function checkDocument() {
-    var accountsDiv = document.getElementsByClassName('zze-list-accounts')[0]
-    if (accountsDiv) {
+    var accountsDiv = document.getElementsByClassName('zze-list-accounts')[0];
+	var budgetUl = document.querySelector('div.zze-list-budgets > div > ul');
+    if (accountsDiv && budgetUl) {
         console.log('organizze-plus :: doc is ready!')
         
         orderAccountsByAccountType();
+		orderBudgetsByUsageDesc();
     
         var toggleInput = document.getElementsByClassName('zze-config ng-binding ng-scope')[0].firstChild;
         toggleInput.addEventListener('click', toggleInvestmentAccounts);
@@ -114,12 +116,12 @@ function toggleInvestmentAccounts() {
     if (shouldHide)
         accountsListItems.forEach(function (el) {
             var accountType = el.querySelector('a > span > p');
-            if (accountType.textContent === 'Conta poupança / investimento') {
+            if (accountType && accountType.textContent === 'Conta poupança / investimento') {
                 el.style.visibility = 'hidden';
                 el.style.display ='none';
                 totalsDiv.forEach(function ({parentNode}) {
                     parentNode.style.visibility = 'hidden';
-                    parentNode.style.display ='none';
+                    parentNode.style.display = 'none';
                 })
             };
         });
@@ -132,4 +134,20 @@ function toggleInvestmentAccounts() {
                 parentNode.style.display = 'block';
             })
         });
+};
+
+function orderBudgetsByUsageDesc() {
+	var budgetUl = document.querySelector('div.zze-list-budgets > div > ul');
+	var budgetLi = budgetUl.querySelectorAll('li');
+	var budgetOrdered = [...budgetLi].sort(function (a, b) { 
+		var aH1 = a.querySelector('h1');
+		var bH1 = b.querySelector('h1');
+		
+		var aValue = Number(aH1.innerText.replace('%', ''));
+		var bValue = Number(bH1.innerText.replace('%', ''));
+		
+		return (aValue < bValue) ? 1 : -1;
+	});
+	
+	budgetUl.outerHTML = '<ul>' + budgetOrdered.reduce(function (init, el) { return init + el.outerHTML }, '') + '</ul>';
 };
