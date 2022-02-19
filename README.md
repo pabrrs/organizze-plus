@@ -3,7 +3,7 @@ Extensão de navegador para o app [Organizze](https://organizze.com.br) com cust
 
 ## Funcionalidades
 
-### Visão Geral | Ordenação e somatório de contas no widget "Minhas Contas"
+### Visão Geral | Ordenação e somatório por contas
 
 ![img1](https://github.com/pabrrs/organizze-plus/blob/main/docs/img/accounts.png)
 
