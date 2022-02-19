@@ -9,6 +9,6 @@ Extensão de navegador para o app [Organizze](https://organizze.com.br) com cust
 
 ---
 
-### Visão Geral | Ordenação dos limites de gastos por maiores gastos 
+### Visão Geral | Ordenação por maiores limites de gastos 
 
 ![img2](https://github.com/pabrrs/organizze-plus/blob/main/docs/img/budget.png)
