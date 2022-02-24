@@ -95,11 +95,12 @@ function orderAccountsByAccountType() {
             return sum + getAccountBalance(account) 
         }, 0)
 
-        totalBankBalance = formatToBr.format(totalBankBalance)
-
+        var totalBankBalanceFormated = formatToBr.format(totalBankBalance)
+        var cssColor = totalBankBalance > 0 ? '#066e38' : '#ff7e75'
+ 
         var totalLi = document.createElement('li')
         totalLi.classList.add('zze-list-columns', 'ng-scope')
-        totalLi.innerHTML = "<div class='row op-total'><div class='col-md-8'><h1 class='lb-title ng-binding' style='color:#555'>Total R$</h3></div><div class='col-md-4'><h1 class='ng-binding ng-scope' style='color:#066e38' >"+totalBankBalance+"</h1></div></div>"
+        totalLi.innerHTML = "<div class='row op-total'><div class='col-md-8'><h1 class='lb-title ng-binding' style='color:#555'>Total R$</h3></div><div class='col-md-4'><h1 class='ng-binding ng-scope' style='color:"+cssColor+"' >"+totalBankBalanceFormated+"</h1></div></div>"
         accountsOrdered = [...accountsOrdered, ...bankBalances, totalLi]
     }
 
