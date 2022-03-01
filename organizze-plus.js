@@ -77,7 +77,7 @@ function orderAccountsByAccountType() {
         if (accountIcon)
             accountIcon = accountIcon.parentNode;
 
-        var logoName = accountImg ? accountImg.src.split('/').pop() : accountIcon.style;
+        var logoName = accountImg ? accountImg.src.split('/').pop() : accountIcon.style.backgroundColor;
 
         if (accountsByBank[logoName])
             accountsByBank[logoName] = [item, ...accountsByBank[logoName]]
