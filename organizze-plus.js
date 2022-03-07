@@ -96,7 +96,7 @@ function orderAccountsByAccountType() {
         }, 0)
 
         var totalBankBalanceFormated = formatToBr.format(totalBankBalance)
-        var cssColor = totalBankBalance > 0 ? '#066e38' : '#ff7e75'
+        var cssColor = totalBankBalance >= 0 ? '#066e38' : '#ff7e75'
  
         var totalLi = document.createElement('li')
         totalLi.classList.add('zze-list-columns', 'ng-scope')
